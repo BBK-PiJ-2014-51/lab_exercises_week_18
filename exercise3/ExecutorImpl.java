@@ -6,13 +6,12 @@ import java.util.Queue;
 import java.util.concurrent.Executor;
 
 public class ExecutorImpl implements Executor {
-	Queue<Runnable> currentTasks, pendingTasks;
+	Queue<Runnable> pendingTasks;
 	Thread[] threads;
 	int numTasks, nThreads;
 	boolean running;
 	
 	public ExecutorImpl(int nThreads){
-		currentTasks = new LinkedList<Runnable>();
 		pendingTasks = new LinkedList<Runnable>();
 		threads = new Thread[nThreads];
 		this.nThreads = nThreads;
@@ -22,11 +21,7 @@ public class ExecutorImpl implements Executor {
 	
 	@Override
 	public void execute(Runnable command) {
-		if (numTasks > nThreads ){
-			pendingTasks.add(command);
-		} else {
-			currentTasks.add(command);
-		}
+		pendingTasks.add(command);
 		numTasks++;
 		if (!running) runTasks();
 	}
@@ -46,12 +41,10 @@ public class ExecutorImpl implements Executor {
 	}
 	
 	private void sendNextTaskToExecute(int index){
-		if (!currentTasks.isEmpty()){
-			Thread t = new Thread(currentTasks.poll());
+		if (!pendingTasks.isEmpty()){
+			Thread t = new Thread(pendingTasks.poll());
 			threads[index] = t;
 			t.start();
-			if (!pendingTasks.isEmpty())
-				currentTasks.add(pendingTasks.poll());
 			numTasks--;
 		}
 	}
