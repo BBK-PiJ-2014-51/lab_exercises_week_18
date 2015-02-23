@@ -37,6 +37,8 @@ public class TextLoop implements Runnable {
 			for (int i = 0; i < 10; i++) {
 				Runnable r = new TextLoop("Thread " + i);
 				ex.execute(r);
+				System.out.println("Max time left: " + ((ExecutorImpl) ex).getMaxPendingTime());
+				
 				//Thread t = new Thread(r);
 				//t.start();
 			}

@@ -48,4 +48,18 @@ public class ExecutorImpl implements Executor {
 			numTasks--;
 		}
 	}
+	
+	public int getNumThreadsRunning(){
+		int numRunning = 0;
+		for (int i = 0; i < nThreads; i++){
+			if (threads[i] != null){
+				if (threads[i].isAlive()) numRunning++;
+			}
+		}
+		return numRunning;
+	}
+	
+	public int getMaxPendingTime(){
+		return getNumThreadsRunning() * TimedTask.MAX_SLEEP_TIME;
+	}
 }
